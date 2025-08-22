@@ -3,7 +3,7 @@
 - Basically a simple TCP connection that receives a message, and echoes it back.
 
 #### Features to add (ordered in levels of increasing difficulty, I think.)
-- [ ] Message counter - Count how many messages each person sends
+- [x] Message counter - Count how many messages each person sends
 - [ ] Quit command - Type "quit" to disconnect nicely
 - [ ] Welcome message - Show a custom greeting with the time
 - [ ] Uppercase mode - Echo everything back in CAPS
