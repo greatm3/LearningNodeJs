@@ -7,13 +7,18 @@ const config = {
 
 const server = net.createServer((socket) => {
     socket.on("connect", () => {
-        console.log("Client connected!");
+        console.log("Client connected!\n");
     })
 
-    socket.write("Say anything, and i'll echo it back!")
+    socket.write("Say anything, and i'll echo it back!\n")
+
+    socket.on("data", (data) => {
+        socket.write("You said: " + data + "\n")
+        console.log("They said: " + data + "\n")
+    })
 
     socket.on("disconnect", () => {
-        console.log("Client disconnected!");
+        console.log("Client disconnected!\n");
     })
 })
 
