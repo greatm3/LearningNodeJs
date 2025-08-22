@@ -16,12 +16,16 @@ const server = net.createServer((socket) => {
     socket.on("data", (data) => {
         messageCount++;
         let message = data.toString().trim();
-        socket.write(`Message #${messageCount} -> You said: ${message}`);
-        console.log(`Message #${messageCount} -> They said: ${message}`)
-    })
 
-    socket.on("end", () => {
-        console.log("Client disconnected!\n");
+        if (message !== "quit") {
+            socket.write(`Message #${messageCount} -> You said: ${message}\n`);
+            console.log(`Message #${messageCount} -> They said: ${message}\n`)
+        } else {
+            socket.write("Goodbye!")
+            socket.end();
+            console.log("Client exited the server.")
+        }
+
     })
 })
 
