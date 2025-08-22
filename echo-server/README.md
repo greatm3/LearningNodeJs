@@ -4,10 +4,8 @@
 
 #### Features to add (ordered in levels of increasing difficulty, I think.)
 - [x] Message counter - Count how many messages each person sends
-- [ ] Quit command - Type "quit" to disconnect nicely
-- [ ] Welcome message - Show a custom greeting with the time
-- [ ] Uppercase mode - Echo everything back in CAPS
-- [ ] Reverse mode - Echo messages backwards
+- [x] Quit command - Type "quit" to disconnect nicely
+- [ ] Welcome message - Show a custom greeting with the time  
 ---
 - [ ] Multiple clients - Let several people connect at once
 - [ ] Broadcast - Send one person's message to everyone else (basic chat)
