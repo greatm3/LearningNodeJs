@@ -22,6 +22,7 @@ const server = net.createServer((socket) => {
             console.log(`Message #${messageCount} -> They said: ${message}\n`)
         } else {
             socket.write("Goodbye!")
+            messageCount = 0;
             socket.end();
             console.log("Client exited the server.")
         }
