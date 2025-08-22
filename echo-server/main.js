@@ -6,15 +6,22 @@ const config = {
 }
 
 const server = net.createServer((socket) => {
+
+
+
     socket.on("connect", () => {
         console.log("Client connected!\n");
     })
 
+    let messageCount = 0;
+
     socket.write("Say anything, and i'll echo it back!\n")
 
     socket.on("data", (data) => {
-        socket.write("You said: " + data + "\n")
-        console.log("They said: " + data + "\n")
+        messageCount++;
+        let message = data.toString();
+        socket.write(`Message #${messageCount} -> You said: ${message}`);
+        console.log(`Message #${messageCount} -> They said: ${message}`)
     })
 
     socket.on("disconnect", () => {
