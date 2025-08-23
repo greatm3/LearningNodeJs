@@ -6,11 +6,22 @@ class Client {
         this.id = Math.floor((Math.random() * 10000) + new Date() / 5000);
     }
 
+    sendMessage(message) {
+        try {
+            this.socket.write(message);
+            this.messageCount++;
+        } catch (error) {
+            console.log("Error: " + error.message);
+        }
+    }
+
+    disconnect() {
+        this.socket.end();
+    }
+
     static createClient (client, socket) {
         return new Client(client, socket);
     }
 }
 
-const client = Client.createClient(133, "SOCKET")
-
-console.log(client);
+export { Client };
