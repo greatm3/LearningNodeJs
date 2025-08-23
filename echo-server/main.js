@@ -11,24 +11,24 @@ const server = net.createServer((socket) => {
 
     // create a unique client id on connection
     const clientID = Math.floor(Math.random() * 1000);
-
     clients[clientID] = socket;
-
-    console.log("Client connected!\n");
-
-    let messageCount = 0;
-
-    socket.write("Welcome to the echo chat server!\n")
 
     // function to broadcast the message to other clients except the sender
 
-    function broadCast(message) {
+    function broadCast(message, senderId) {
         for (let id in clients) {
-            if (socket !== clients[id]) {
-                clients[id].write(`Message #${messageCount} -> [user ${id}] said: ${message}\n`);
+            if (clients[senderId] !== socket) {
+                clients[id].write(message);
+                console.log("Client ID: " + id);
             }
         }
     }
+
+    console.log("Client connected!");
+
+    let messageCount = 0;
+    socket.write("Welcome to the echo chat server!\n")
+    broadCast(`[${clientID}] just entered the chat\n`, clientID);
 
     socket.on("data", (data) => {
 
@@ -36,12 +36,23 @@ const server = net.createServer((socket) => {
         let message = data.toString().trim();
 
         if (message !== "quit") {
-            broadCast(message);
+
+            broadCast(`Message #${messageCount} -> [${clientID}] said ${message}!\n`, clientID);
+            socket.write(`Message #${messageCount} -> You said: ${message}\n`);
+
         } else {
+
             socket.write("Goodbye!")
+
+            // reset the message count to 0, and remove the client from the clients pool
             messageCount = 0;
+            delete clients[clientID]
+
+            // end connection and broadcast exit status
+            broadCast(`${clientID}! just exited the chat\n`, clientID);
             socket.end();
             console.log("Client exited the server.")
+
         }
 
     })
