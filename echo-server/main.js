@@ -16,11 +16,19 @@ const server = net.createServer((socket) => {
 
     console.log("Client connected!\n");
 
-    console.log(socket)
-
-
     let messageCount = 0;
-    socket.write("Say anything, and i'll echo it back!\n")
+
+    socket.write("Welcome to the echo chat server!\n")
+
+    // function to broadcast the message to other clients except the sender
+
+    function broadCast(message) {
+        for (let id in clients) {
+            if (socket !== clients[id]) {
+                clients[id].write(`Message #${messageCount} -> [user ${id}] said: ${message}\n`);
+            }
+        }
+    }
 
     socket.on("data", (data) => {
 
@@ -28,8 +36,7 @@ const server = net.createServer((socket) => {
         let message = data.toString().trim();
 
         if (message !== "quit") {
-            socket.write(`Message #${messageCount} -> You said: ${message}\n`);
-            console.log(`Message #${messageCount} -> They said: ${message}\n`)
+            broadCast(message);
         } else {
             socket.write("Goodbye!")
             messageCount = 0;
