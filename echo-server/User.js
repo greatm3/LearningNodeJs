@@ -1,4 +1,4 @@
-class Client {
+class User {
     constructor (client, socket) {
         this.client = client;
         this.socket = socket;
@@ -20,8 +20,8 @@ class Client {
     }
 
     static createClient (client, socket) {
-        return new Client(client, socket);
+        return new User(client, socket);
     }
 }
 
-export { Client };
+export { User };

@@ -1,4 +1,5 @@
 import net from "net";
+import { User } from "./User.js";
 
 const config = {
     host: "localhost",
@@ -19,12 +20,12 @@ const server = net.createServer((socket) => {
         for (let id in clients) {
             if (clients[senderId] !== socket) {
                 clients[id].write(message);
-                console.log("Client ID: " + id);
+                console.log("User ID: " + id);
             }
         }
     }
 
-    console.log("Client connected!");
+    console.log("User connected!");
 
     let messageCount = 0;
     socket.write("Welcome to the echo chat server!\n")
@@ -51,7 +52,7 @@ const server = net.createServer((socket) => {
             // end connection and broadcast exit status
             broadCast(`${clientID}! just exited the chat\n`, clientID);
             socket.end();
-            console.log("Client exited the server.")
+            console.log("User exited the server.")
 
         }
 
