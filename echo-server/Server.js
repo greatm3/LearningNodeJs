@@ -17,14 +17,17 @@ class Server extends EventEmitter {
             user.id = this.#assignID();
 
             this.#handleConnection(connection, user);
+            this.emit("LOGINFO", `new user connected -> ${user.id}`)
 
             connection.on("data", (data) => {
                 this.broadcastMessage(`[${user.id}]: ${data.toString().trim()}\n`, user);
                 user.messageCount++;
+                this.emit("LOGINFO", `${user.id} -> new message: messageCount -> ${user.messageCount}`)
             })
 
             connection.on("end", () => {
                 this.broadcastMessage(`[${user.id}] left the chat\n`, user);
+                this.emit("LOGINFO", `${user.id} exited the chat`)
                 this.userPool = this.userPool.filter((client) => {
                     if (client.id !== user.id) {
                         return user;
@@ -33,11 +36,12 @@ class Server extends EventEmitter {
             })
 
             connection.on("error", (err) => {
-                this.config.logger(err.message)
+                this.emit("LOGERROR", err.message);
             })
 
         }).listen(this.port, this.host, () => {
-            this.config.logger("Server started: " + this.host + ":" + this.port);
+            console.log("Server started: " + this.host + ":" + this.port);
+            this.emit("LOGINFO", `Server started: ${this.host}:${this.port}`);
         })
     }
 
