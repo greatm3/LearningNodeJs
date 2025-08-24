@@ -3,12 +3,11 @@ import net from "net";
 import { EventEmitter } from "events";
 
 class Server extends EventEmitter {
-    constructor (port, host, config = {}) {
+    constructor (port, host) {
         super();
         this.port = port;
         this.host = host;
         this.userPool = [];
-        this.config = config;
     }
 
     start() {

@@ -16,7 +16,7 @@ class Logger {
     }
 
     async #createPathIfNotExists(path) {
-        await fs.mkdir(path, (err) => {
+        fs.mkdir(path, (err) => {
             if (err.code !== "EEXIST") {
                 throw err;
             }
@@ -47,14 +47,4 @@ class Logger {
 
 }
 
-const testServer = new Server(5900, "localhost");
-
-const logger = Logger.start({
-    logPath: "/logs/",
-    logFile: "log.txt",
-    eventEmitter: testServer
-})
-
-logger.eventEmitter.on("INFO", (err) => {
-    console.log(err)
-})
+export default Logger;
