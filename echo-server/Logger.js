@@ -1,6 +1,5 @@
 import path from "path";
 import fs from "fs/promises";
-import Server from "./Server.js";
 
 class Logger {
     constructor({logPath, logFile, eventEmitter}) {
