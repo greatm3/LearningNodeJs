@@ -1,9 +1,14 @@
 import Server from "./Server.js";
 import Logger from "./Logger.js";
 
-const config = {
-    logger: console.log
+const server = new Server(59000, "localhost")
+
+const loggerParameters = {
+    logFile: "log.txt",
+    logPath: "logs/",
+    eventEmitter: server
 }
-const server = new Server(59000, "localhost", config)
+
+Logger.start(loggerParameters);
 
 server.start()
