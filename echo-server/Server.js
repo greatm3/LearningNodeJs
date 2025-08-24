@@ -1,9 +1,9 @@
 import {User} from "./User.js";
 import net from "net";
-import { EventEmitter } from "events";
+import {EventEmitter} from "events";
 
 class Server extends EventEmitter {
-    constructor (port, host) {
+    constructor(port, host) {
         super();
         this.port = port;
         this.host = host;
@@ -45,7 +45,7 @@ class Server extends EventEmitter {
         })
     }
 
-    #handleConnection (connection, user) {
+    #handleConnection(connection, user) {
         this.#assignID(user)
         this.broadcastMessage(`User ${user.id} connected\n`, user);
         user.socket.write(`Welcome to the server ID: ${user.id} -> ${this.userPool.length} online\n`);
@@ -56,7 +56,7 @@ class Server extends EventEmitter {
         return Math.floor((Math.random() * 10000) + Date.now() / 5000);
     }
 
-    broadcastMessage (message, sender) {
+    broadcastMessage(message, sender) {
         this.userPool.forEach((user) => {
             if (user.socket !== sender.socket) {
                 user.socket.write(message);

@@ -47,8 +47,8 @@ class Logger {
         })
     }
 
-    static start({ logPath, logFile, eventEmitter }) {
-        return new Logger({ logPath, logFile, eventEmitter });
+    static start({logPath, logFile, eventEmitter}) {
+        return new Logger({logPath, logFile, eventEmitter});
     }
 
 }
