@@ -7,18 +7,18 @@
 - [x] Quit command - Type "quit" to disconnect nicely
 - [ ] Welcome message - Show a custom greeting with the time  
 ---
-- [ ] Multiple clients - Let several people connect at once
-- [ ] Broadcast - Send one person's message to everyone else (basic chat)
+- [x] Multiple clients - Let several people connect at once
+- [x] Broadcast - Send one person's message to everyone else (basic chat)
 - [ ] Nicknames - Let people choose a username
 - [ ] Time stamps - Add time to each message
 - [ ] Command system - Special commands like "/help" or "/time"
 ---
-- [ ] Connection events - Emit events when people join/leave
-- [ ] Message events - Emit events for different types of messages
-- [ ] Error events - Emit events when things go wrong
+- [x] Connection events - Emit events when people join/leave
+- [x] Message events - Emit events for different types of messages
+- [x] Error events - Emit events when things go wrong
 ---
 - [ ] Save chat history - Write all messages to a file
 - [ ] Load old messages - Show previous conversations when someone connects
-- [ ] Log connections - Keep track of who connected when
+- [x] Log connections - Keep track of who connected when
 
 # 

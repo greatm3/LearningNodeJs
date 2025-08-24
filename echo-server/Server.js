@@ -57,7 +57,7 @@ class Server extends EventEmitter {
                 user.socket.write("Server is shutting down, GoodBye")
                 user.socket.end();
             })
-            
+
             setTimeout(() => {
                 console.log("Server closed");
                 process.exit(0);
