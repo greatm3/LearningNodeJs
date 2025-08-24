@@ -1,15 +1,19 @@
 import {User} from "./User.js";
 import net from "net";
+import { EventEmitter } from "events";
 
-class Server {
-    constructor (port, host) {
+class Server extends EventEmitter {
+    constructor (port, host, config = {}) {
+        super();
         this.port = port;
         this.host = host;
         this.userPool = [];
+        this.config = config;
     }
 
     start() {
         net.createServer((connection) => {
+
             const user = User.createClient(connection);
             user.id = this.#assignID();
 
@@ -21,7 +25,7 @@ class Server {
             })
 
             connection.on("end", () => {
-                this.broadcastMessage(`[${user.id}] left the chat\n`, user)
+                this.broadcastMessage(`[${user.id}] left the chat\n`, user);
                 this.userPool = this.userPool.filter((client) => {
                     if (client.id !== user.id) {
                         return user;
@@ -29,8 +33,12 @@ class Server {
                 })
             })
 
+            connection.on("error", (err) => {
+                this.config.logger(err.message)
+            })
+
         }).listen(this.port, this.host, () => {
-            console.log("Server started: " + this.host + ":" + this.port + "\n")
+            this.config.logger("Server started: " + this.host + ":" + this.port);
         })
     }
 
