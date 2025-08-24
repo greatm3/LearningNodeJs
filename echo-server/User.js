@@ -2,7 +2,6 @@ class User {
     constructor (socket) {
         this.socket = socket;
         this.messageCount = 0;
-        this.id = Math.floor((Math.random() * 10000) + Date.now() / 5000);
         this.timeJoined = new Date().getTime();
     }
 

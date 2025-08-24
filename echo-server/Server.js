@@ -11,9 +11,9 @@ class Server {
     start() {
         net.createServer((connection) => {
             const user = User.createClient(connection);
-            this.#handleConnection(connection, user);
+            user.id = this.#assignID();
 
-            // for
+            this.#handleConnection(connection, user);
 
             connection.on("data", (data) => {
                 this.broadcastMessage(`[${user.id}]: ${data.toString().trim()}\n`, user);
@@ -21,6 +21,7 @@ class Server {
             })
 
             connection.on("end", () => {
+                this.broadcastMessage(`[${user.id}] left the chat\n`, user)
                 this.userPool = this.userPool.filter((client) => {
                     if (client.id !== user.id) {
                         return user;
@@ -40,8 +41,8 @@ class Server {
         this.userPool.push(user);
     }
 
-    #assignID(client) {
-        client.id = Math.floor((Math.random() * 10000) + Date.now() / 5000);
+    #assignID() {
+        return Math.floor((Math.random() * 10000) + Date.now() / 5000);
     }
 
     broadcastMessage (message, sender) {
