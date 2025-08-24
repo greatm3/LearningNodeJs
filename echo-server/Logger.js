@@ -1,5 +1,5 @@
 import path from "path";
-import fs from "fs";
+import fs from "fs/promises";
 import Server from "./Server.js";
 
 class Logger {
@@ -16,25 +16,32 @@ class Logger {
     }
 
     async #createPathIfNotExists(path) {
-        fs.mkdir(path, (err) => {
-            if (err.code !== "EEXIST") {
-                throw err;
-            }
-        })
+        try {
+            await fs.mkdir(path)
+        } catch (error) {
+            return false;
+        }
     }
 
     async #createFileIfNotExists(path) {
-        await fs.writeFile(path, "", "utf-8", (err) => {
-            if (err) {
-                throw err;
+        async function checkIfFileExists(path) {
+            try {
+                await fs.access(path);
+                return true;
+            } catch (error) {
+                return false;
             }
-        })
+        }
+
+        if (!await checkIfFileExists(path)) {
+            await fs.writeFile(path, "", "utf-8")
+        }
     }
 
     async #log(message, level, time) {
         const logMessage = `[${time}] ${level}: ${message}\n`
 
-        fs.appendFile(this.logFile, logMessage, err => {
+        await fs.appendFile(this.logFile, logMessage, err => {
             if (err) {
                 throw err;
             }
