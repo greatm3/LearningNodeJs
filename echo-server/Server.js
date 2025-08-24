@@ -11,7 +11,7 @@ class Server extends EventEmitter {
     }
 
     start() {
-        net.createServer((connection) => {
+        const server = net.createServer((connection) => {
 
             const user = User.createClient(connection);
             user.id = this.#assignID();
@@ -30,7 +30,7 @@ class Server extends EventEmitter {
                 this.emit("LOGINFO", `${user.id} exited the chat`)
                 this.userPool = this.userPool.filter((client) => {
                     if (client.id !== user.id) {
-                        return user;
+                        return client;
                     }
                 })
             })
@@ -39,14 +39,34 @@ class Server extends EventEmitter {
                 this.emit("LOGERROR", err.message);
             })
 
-        }).listen(this.port, this.host, () => {
+        })
+
+        server.listen(this.port, this.host, () => {
             console.log("Server started: " + this.host + ":" + this.port);
             this.emit("LOGINFO", `Server started: ${this.host}:${this.port}`);
         })
+
+        // code to exit in case server shutdown mistakenly or using CTRL + C
+        process.on("SIGINT", async () => {
+            console.log("SHUTTING DOWN SERVER...")
+
+            server.close();
+            this.emit("LOGINFO", `Server closed: ${this.host}:${this.port}`);
+
+            this.userPool.forEach((user) => {
+                user.socket.write("Server is shutting down, GoodBye")
+                user.socket.end();
+            })
+            
+            setTimeout(() => {
+                console.log("Server closed");
+                process.exit(0);
+            }, 500)
+        })
+
     }
 
     #handleConnection(connection, user) {
-        this.#assignID(user)
         this.broadcastMessage(`User ${user.id} connected\n`, user);
         user.socket.write(`Welcome to the server ID: ${user.id} -> ${this.userPool.length} online\n`);
         this.userPool.push(user);
