@@ -24,7 +24,7 @@ class Logger {
     }
 
     async #createFileIfNotExists(path) {
-        await fs.writeFile(path, "utf-8", (err) => {
+        await fs.writeFile(path, "", "utf-8", (err) => {
             if (err) {
                 throw err;
             }

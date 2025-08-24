@@ -1,4 +1,5 @@
 import Server from "./Server.js";
+import Logger from "./Logger.js";
 
 const config = {
     logger: console.log
