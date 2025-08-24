@@ -4,8 +4,8 @@ class User {
         this.messageCount = 0;
     }
 
-    static createClient(client, socket) {
-        return new User(client, socket);
+    static createClient(socket) {
+        return new User(socket);
     }
 }
 
