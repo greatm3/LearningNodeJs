@@ -10,17 +10,38 @@ class Server {
 
     start() {
         net.createServer((connection) => {
-            this.#handleConnection(connection);
+            const user = User.createClient(connection);
+            this.#handleConnection(connection, user);
+
+            // for
+
+            connection.on("data", (data) => {
+                this.broadcastMessage(`[${user.id}]: ${data.toString().trim()}\n`, user);
+                user.messageCount++;
+            })
+
+            connection.on("end", () => {
+                this.userPool = this.userPool.filter((client) => {
+                    if (client.id !== user.id) {
+                        return user;
+                    }
+                })
+            })
+
         }).listen(this.port, this.host, () => {
-            process.stdout.write("Server started: " + this.host + ":" + this.port)
+            console.log("Server started: " + this.host + ":" + this.port + "\n")
         })
     }
 
-    #handleConnection (connection) {
-        this.client = User.createClient(connection);
-        this.broadcastMessage(`User ${this.client.id} connected\n`, this.client);
-        this.client.socket.write(`Welcome to the server ID: ${this.client.id} -> ${this.userPool.length} online\n`);
-        this.userPool.push(this.client);
+    #handleConnection (connection, user) {
+        this.#assignID(user)
+        this.broadcastMessage(`User ${user.id} connected\n`, user);
+        user.socket.write(`Welcome to the server ID: ${user.id} -> ${this.userPool.length} online\n`);
+        this.userPool.push(user);
+    }
+
+    #assignID(client) {
+        client.id = Math.floor((Math.random() * 10000) + Date.now() / 5000);
     }
 
     broadcastMessage (message, sender) {
