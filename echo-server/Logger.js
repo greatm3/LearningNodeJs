@@ -17,7 +17,7 @@ class Logger {
 
     async #createPathIfNotExists(path) {
         await fs.mkdir(path, (err) => {
-            if (err) {
+            if (err.code !== "EEXIST") {
                 throw err;
             }
         })
