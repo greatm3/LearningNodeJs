@@ -32,7 +32,7 @@ class Logger {
     }
 
     async #log(message, level, time) {
-        const logMessage = `[${time}] ${level}: ${message}`
+        const logMessage = `[${time}] ${level}: ${message}\n`
 
         await fs.appendFile(this.logFile, logMessage, err => {
             if (err) {
