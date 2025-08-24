@@ -20,9 +20,13 @@ class Server extends EventEmitter {
             this.emit("LOGINFO", `new user connected -> ${user.id}`)
 
             connection.on("data", (data) => {
-                this.broadcastMessage(`[${user.id}]: ${data.toString().trim()}\n`, user);
-                user.messageCount++;
-                this.emit("LOGINFO", `${user.id} -> new message: messageCount -> ${user.messageCount}`)
+                if (data.toString().trim() === "quit") {
+                    user.socket.end();
+                } else {
+                    this.broadcastMessage(`[${user.id}]: ${data.toString().trim()}\n`, user);
+                    user.messageCount++;
+                    this.emit("LOGINFO", `${user.id} -> new message: messageCount -> ${user.messageCount}`)
+                }
             })
 
             connection.on("end", () => {
