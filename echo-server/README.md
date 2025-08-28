@@ -5,11 +5,11 @@
 #### Features to add (ordered in levels of increasing difficulty, I think.)
 - [x] Message counter - Count how many messages each person sends
 - [x] Quit command - Type "quit" to disconnect nicely
-- [ ] Welcome message - Show a custom greeting with the time  
+- [x] Welcome message - Show a custom greeting 
 ---
 - [x] Multiple clients - Let several people connect at once
 - [x] Broadcast - Send one person's message to everyone else (basic chat)
-- [ ] Nicknames - Let people choose a username
+- [x] Nicknames - Let people choose a username
 - [ ] Time stamps - Add time to each message
 - [ ] Command system - Special commands like "/help" or "/time"
 ---
