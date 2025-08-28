@@ -16,6 +16,10 @@ class Server extends EventEmitter {
       const user = User.createClient(connection);
       user.id = this.#assignID();
 
+
+      // on connection, set the isFirstMessage prop of the User to true, this property will be the condition to assign a nickname to a connected user
+      user.isFirstMessage = true;
+
       // takes in the connection: socket and the new user that was created as parameters
       this.#handleConnection(connection, user);
       this.emit("LOGINFO", `new user connected -> ${user.id}`)
@@ -54,6 +58,8 @@ class Server extends EventEmitter {
     this.userPool.push(user);
 
     connection.on("data", (data) => {
+      const data = data.toString().trim();
+
       if (data.toString().trim() === "quit") {
         user.socket.end();
       } else {
