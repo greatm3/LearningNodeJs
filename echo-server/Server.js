@@ -19,30 +19,6 @@ class Server extends EventEmitter {
       this.#handleConnection(connection, user);
       this.emit("LOGINFO", `new user connected -> ${user.id}`)
 
-      connection.on("data", (data) => {
-        if (data.toString().trim() === "quit") {
-          user.socket.end();
-        } else {
-          this.broadcastMessage(`[${user.id}]: ${data.toString().trim()}\n`, user);
-          user.messageCount++;
-          this.emit("LOGINFO", `${user.id} -> new message: messageCount -> ${user.messageCount}`)
-        }
-      })
-
-      connection.on("end", () => {
-        this.broadcastMessage(`[${user.id}] left the chat\n`, user);
-        this.emit("LOGINFO", `${user.id} exited the chat`)
-        this.userPool = this.userPool.filter((client) => {
-          if (client.id !== user.id) {
-            return client;
-          }
-        })
-      })
-
-      connection.on("error", (err) => {
-        this.emit("LOGERROR", err.message);
-      })
-
     })
 
     server.listen(this.port, this.host, () => {
@@ -74,6 +50,31 @@ class Server extends EventEmitter {
     this.broadcastMessage(`User ${user.id} connected\n`, user);
     user.socket.write(`Welcome to the server ID: ${user.id} -> ${this.userPool.length} online\n`);
     this.userPool.push(user);
+
+    connection.on("data", (data) => {
+      if (data.toString().trim() === "quit") {
+        user.socket.end();
+      } else {
+        this.broadcastMessage(`[${user.id}]: ${data.toString().trim()}\n`, user);
+        user.messageCount++;
+        this.emit("LOGINFO", `${user.id} -> new message: messageCount -> ${user.messageCount}`)
+      }
+    })
+
+    connection.on("end", () => {
+      this.broadcastMessage(`[${user.id}] left the chat\n`, user);
+      this.emit("LOGINFO", `${user.id} exited the chat`)
+      this.userPool = this.userPool.filter((client) => {
+        if (client.id !== user.id) {
+          return client;
+        }
+      })
+    })
+
+    connection.on("error", (err) => {
+      this.emit("LOGERROR", err.message);
+    })
+
   }
 
   #assignID() {
