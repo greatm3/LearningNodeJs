@@ -24,18 +24,31 @@ const pickRandomMessage = () => {
   return dummyMessages[Math.floor(Math.random() * dummyMessages.length)]
 }
 
+try {
+  const client = net.createConnection({ port: 59000 }, () => {
+    console.log("Connected to server");
+    client.write("sample-client")
 
-const client = net.createConnection({ port: 59000 }, () => {
-  console.log("Connected to server");
-  client.write("sample-client")
+    // send a random message every 4 seconds
+    setInterval(() => {
+      client.write(pickRandomMessage())
+    }, 4000)
 
-  // send a random message every 4 seconds
-  setInterval(() => {
-    client.write(pickRandomMessage())
-  }, 4000)
+    client.on("error", (err) => {
+      console.log(err.message)
+      process.exit(1)
+    })
 
-  process.on("SIGINT", () => {
-    client.end();
-  })
+    process.on("SIGINT", () => {
+      client.end();
+    })
 
-});
+    client.on("end", () => {
+      console.log("Server closed")
+    })
+
+  });
+} catch (error) {
+  console.log(error.message)
+}
+
