@@ -56,12 +56,11 @@ class Server extends EventEmitter {
 
   // handles the "data" and "end" events emitted by the connection
   #handleConnection(connection, user) {
-    this.userPool.push(user);
 
     connection.on("data", (data) => {
       const message = data.toString().trim();
 
-      if (message.toString().trim() === "quit") {
+      if (message === "quit") {
         user.socket.end();
       } else {
         if (!user.isFirstMessage) {
@@ -69,26 +68,32 @@ class Server extends EventEmitter {
           this.broadcastMessage(`[${user.nickname}]: ${message}\n`, user);
           user.messageCount++;
           this.emit("LOGINFO", `${user.id} -> new message: messageCount -> ${user.messageCount}`)
+
         } else {
           // parse/set nickname;
           const providedNickname = message;
-
-          const nicknameExists = (providedNickname) => {
-            for (let index = 0; index < this.userPool.length; index++) {
-              if (this.userPool[index].nickname?.toLowerCase() === providedNickname.toLowerCase()) {
-                return true
-              }
-            }
-            return false;
-          }
-
-          if (nicknameExists(providedNickname)) {
-            user.socket.write(`${providedNickname} has been used, provide another one: `)
+          if (providedNickname === "") {
+            user.socket.write("Please provide a valid nickname: ")
           } else {
-            user.nickname = message;
-            user.socket.write(`welcome to ${this.serverName} ${user.nickname}!, ${this.userPool.length} online\n`)
-            this.broadcastMessage(`${user.nickname} joined the chat!\n`, user)
-            user.isFirstMessage = false;
+
+            const nicknameExists = (providedNickname) => {
+              for (let index = 0; index < this.userPool.length; index++) {
+                if (this.userPool[index].nickname?.toLowerCase() === providedNickname.toLowerCase()) {
+                  return true
+                }
+              }
+              return false;
+            }
+
+            if (nicknameExists(providedNickname)) {
+              user.socket.write(`${providedNickname} has been used, provide another one: `)
+            } else {
+              user.nickname = message;
+              user.socket.write(`welcome to ${this.serverName} ${user.nickname}!, ${this.userPool.length} online\n`)
+              this.broadcastMessage(`${user.nickname} joined the chat!\n`, user)
+              user.isFirstMessage = false;
+              this.userPool.push(user);
+            }
           }
 
         }
