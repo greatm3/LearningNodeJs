@@ -90,7 +90,7 @@ class Server extends EventEmitter {
             } else {
               user.nickname = message;
               user.socket.write(`welcome to ${this.serverName} ${user.nickname}!, ${this.userPool.length} online\n`)
-              this.broadcastMessage(`${user.nickname} joined the chat!\n`, user)
+              this.broadcastMessage(`${user.nickname} joined the chat.\n`, user)
               user.isFirstMessage = false;
               this.userPool.push(user);
             }
@@ -102,7 +102,7 @@ class Server extends EventEmitter {
     })
 
     connection.on("end", () => {
-      this.broadcastMessage(`${user.nickname} left the chat\n`, user);
+      this.broadcastMessage(`${user.nickname} left the chat!\n`, user);
       this.emit("LOGINFO", `${user.id} exited the chat`)
       this.userPool = this.userPool.filter((client) => {
         if (client.id !== user.id) {
