@@ -16,6 +16,7 @@ class Server extends EventEmitter {
       const user = User.createClient(connection);
       user.id = this.#assignID();
 
+      // takes in the connection: socket and the new user that was created as parameters
       this.#handleConnection(connection, user);
       this.emit("LOGINFO", `new user connected -> ${user.id}`)
 
@@ -46,6 +47,7 @@ class Server extends EventEmitter {
 
   }
 
+  // handles the "data" and "end" events emitted by the connection
   #handleConnection(connection, user) {
     this.broadcastMessage(`User ${user.id} connected\n`, user);
     user.socket.write(`Welcome to the server ID: ${user.id} -> ${this.userPool.length} online\n`);
@@ -77,6 +79,7 @@ class Server extends EventEmitter {
 
   }
 
+  // this right now, is not practical i'm just using it for the mean time.
   #assignID() {
     return Math.floor((Math.random() * 10000) + Date.now() / 5000);
   }
