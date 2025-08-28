@@ -3,10 +3,11 @@ import net from "net";
 import { EventEmitter } from "events";
 
 class Server extends EventEmitter {
-  constructor(port, host) {
+  constructor(port, host, serverName) {
     super();
     this.port = port;
     this.host = host;
+    this.serverName = serverName;
     this.userPool = [];
   }
 
@@ -18,7 +19,9 @@ class Server extends EventEmitter {
 
 
       // on connection, set the isFirstMessage prop of the User to true, this property will be the condition to assign a nickname to a connected user
+      // and ask for the nickname
       user.isFirstMessage = true;
+      user.socket.write(`Welcome to ${this.serverName}, please kindly provide a nickname: `)
 
       // takes in the connection: socket and the new user that was created as parameters
       this.#handleConnection(connection, user);
@@ -53,8 +56,8 @@ class Server extends EventEmitter {
 
   // handles the "data" and "end" events emitted by the connection
   #handleConnection(connection, user) {
-    this.broadcastMessage(`User ${user.id} connected\n`, user);
-    user.socket.write(`Welcome to the server ID: ${user.id} -> ${this.userPool.length} online\n`);
+    this.broadcastMessage(`User ${user.nickname} connected\n`, user);
+    user.socket.write(`Welcome to the server ID: ${user.nickname} -> ${this.userPool.length} online\n`);
     this.userPool.push(user);
 
     connection.on("data", (data) => {
@@ -63,9 +66,17 @@ class Server extends EventEmitter {
       if (data.toString().trim() === "quit") {
         user.socket.end();
       } else {
-        this.broadcastMessage(`[${user.id}]: ${data.toString().trim()}\n`, user);
-        user.messageCount++;
-        this.emit("LOGINFO", `${user.id} -> new message: messageCount -> ${user.messageCount}`)
+        if (!user.isFirstMessage) {
+
+          this.broadcastMessage(`[${user.nickname}]: ${data.toString().trim()}\n`, user);
+          user.messageCount++;
+          this.emit("LOGINFO", `${user.id} -> new message: messageCount -> ${user.messageCount}`)
+        } else {
+          // parse/set nickname;
+          const providedNickname = data;
+
+        }
+
       }
     })
 
