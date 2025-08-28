@@ -97,7 +97,7 @@ class Server extends EventEmitter {
     })
 
     connection.on("end", () => {
-      this.broadcastMessage(`[${user.nickname}] left the chat\n`, user);
+      this.broadcastMessage(`${user.nickname} left the chat\n`, user);
       this.emit("LOGINFO", `${user.id} exited the chat`)
       this.userPool = this.userPool.filter((client) => {
         if (client.id !== user.id) {
