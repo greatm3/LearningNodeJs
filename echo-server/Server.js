@@ -21,7 +21,7 @@ class Server extends EventEmitter {
       // on connection, set the isFirstMessage prop of the User to true, this property will be the condition to assign a nickname to a connected user
       // and ask for the nickname
       user.isFirstMessage = true;
-      user.socket.write(`Welcome to ${this.serverName}, please kindly provide a nickname: `)
+      user.socket.write(`Hello this is ${this.serverName}, please kindly provide a nickname to join: `)
 
       // takes in the connection: socket and the new user that was created as parameters
       this.#handleConnection(connection, user);
@@ -88,6 +88,7 @@ class Server extends EventEmitter {
             user.nickname = message;
             user.socket.write(`welcome to ${this.serverName} ${user.nickname}!, ${this.userPool.length} online\n`)
             this.broadcastMessage(`${user.nickname} joined the chat!\n`, user)
+            user.isFirstMessage = false;
           }
 
         }
@@ -96,7 +97,7 @@ class Server extends EventEmitter {
     })
 
     connection.on("end", () => {
-      this.broadcastMessage(`[${user.id}] left the chat\n`, user);
+      this.broadcastMessage(`[${user.nickname}] left the chat\n`, user);
       this.emit("LOGINFO", `${user.id} exited the chat`)
       this.userPool = this.userPool.filter((client) => {
         if (client.id !== user.id) {
